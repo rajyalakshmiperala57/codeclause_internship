@@ -1,0 +1,146 @@
+import java.util.*;
+
+class Employee {
+    private int id;
+    private String name;
+    private String position;
+    private String department;
+    private double salary;
+
+    // Constructor
+    public Employee(int id, String name, String position, String department, double salary) {
+        this.id = id;
+        this.name = name;
+        this.position = position;
+        this.department = department;
+        this.salary = salary;
+    }
+
+    // Getters
+    public int getId() { return id; }
+    public String getName() { return name; }
+    public String getPosition() { return position; }
+    public String getDepartment() { return department; }
+    public double getSalary() { return salary; }
+
+    // Display employee details
+    public void display() {
+        System.out.printf("ID: %d | Name: %s | Position: %s | Department: %s | Salary: %.2f%n", id, name, position, department, salary);
+    }
+}
+
+public class EmployeeManagementSystem {
+    private static List<Employee> employees = new ArrayList<>();
+    private static int nextId = 1;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int choice;
+
+        do {
+            System.out.println("\n--- Employee Management System ---");
+            System.out.println("1. Add Employee");
+            System.out.println("2. View Employees");
+            System.out.println("3. Edit Employee");
+            System.out.println("4. Delete Employee");
+            System.out.println("5. Calculate Payroll");
+            System.out.println("6. Exit");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    addEmployee(scanner);
+                    break;
+                case 2:
+                    viewEmployees();
+                    break;
+                case 3:
+                    editEmployee(scanner);
+                    break;
+                case 4:
+                    deleteEmployee(scanner);
+                    break;
+                case 5:
+                    calculatePayroll();
+                    break;
+                case 6:
+                    System.out.println("Exiting...");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        } while (choice != 6);
+
+        scanner.close();
+    }
+
+    private static void addEmployee(Scanner scanner) {
+        System.out.print("Enter employee name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter position: ");
+        String position = scanner.nextLine();
+        System.out.print("Enter department: ");
+        String department = scanner.nextLine();
+        System.out.print("Enter salary: ");
+        double salary = scanner.nextDouble();
+        employees.add(new Employee(nextId++, name, position, department, salary));
+        System.out.println("Employee added successfully!");
+    }
+
+    private static void viewEmployees() {
+        System.out.println("\n--- Employee List ---");
+        if (employees.isEmpty()) {
+            System.out.println("No employees found.");
+        } else {
+            for (Employee emp : employees) {
+                emp.display();
+            }
+        }
+    }
+
+    private static void editEmployee(Scanner scanner) {
+        System.out.print("Enter employee ID to edit: ");
+        int id = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+        for (Employee emp : employees) {
+            if (emp.getId() == id) {
+                System.out.print("Enter new name (or press Enter to keep current): ");
+                String name = scanner.nextLine();
+                System.out.print("Enter new position (or press Enter to keep current): ");
+                String position = scanner.nextLine();
+                System.out.print("Enter new department (or press Enter to keep current): ");
+                String department = scanner.nextLine();
+                System.out.print("Enter new salary (or press Enter to keep current): ");
+                String salaryInput = scanner.nextLine();
+
+                // Update employee details if new values are provided
+                if (!name.isEmpty()) emp.getName() = name; // Update name
+                if (!position.isEmpty()) emp.getPosition() = position; // Update position
+                if (!department.isEmpty()) emp.getDepartment() = department; // Update department
+                if (!salaryInput.isEmpty()) emp.getSalary() = Double.parseDouble(salaryInput); // Update salary
+
+                System.out.println("Employee updated successfully!");
+                return;
+            }
+        }
+        System.out.println("Employee not found.");
+    }
+
+    private static void deleteEmployee(Scanner scanner) {
+        System.out.print("Enter employee ID to delete: ");
+        int id = scanner.nextInt();
+        employees.removeIf(emp -> emp.getId() == id);
+        System.out.println("Employee deleted successfully (if existed).");
+    }
+
+    private static void calculatePayroll() {
+        System.out.println("\n--- Payroll ---");
+        double totalPayroll = 0;
+        for (Employee emp : employees) {
+            totalPayroll += emp.getSalary();
+        }
+        System.out.printf("Total payroll: %.2f%n", totalPayroll);
+    }
+}
